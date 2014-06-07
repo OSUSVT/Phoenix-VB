@@ -1,14 +1,56 @@
 ﻿Public Class frmMain
     'Public definitions
-    Const EFF_RED As Integer = 25
-    Const EFF_YELLOW As Integer = 50
-    Const PWR_MAX = 7500
+    Const WATT_RED As Double = -0.5
+    Const WATT_YELLOW As Double = -0.25
+    Const BATT_POWER_COUNT_MAX As Integer = 300             'the number of seconds between each histogram bar update
+    'Const PWR_MAX = 7500
 
+    'edits:
+
+    '4/27
+    'public class frmMain
+    'InitPowerHistory()
+    'RefreshHistory(), and the other refresh
+    'tmrMain_Tick
+    'lblHist1_Click
+    'tmrWattHistory should be enabled in the init efficeincy histroy function,
+    'thus making the histroy function NOT on click and on .tick (like the other functions
+
+    '5/2
+    ''ToggleOdometer
+    ''lblOdometer
+    ''lblBorder2Click/lblOdometerClick
+    'tmrMain_Tick
+
+    '5/3
+    'refreshHistory -> now a timer
+    'tmrInit now has the histogram timer
+
+    '5/4
+    'I worked on some stuff but a lot seems to have gone missing and I'm not sure why, 
+    'I suspect it's because I changed it on the solar car, but not here
+    'there are now 4 histograms
+    'the histogram boxes no longer get too large
+
+
+    'todo from hai-yue:
+    'make time to empty work at all
+    'start by making it just work for 30 mins since that seems good
+    'turn off clicking from odometer (just make it say "review... odo: 'num')
+
+    'other todo
+    'make odometer work
+    'make time till full work
+
+    'nick todo
+    'music
 
     'Public Declarations
     Dim bolViewSOC As Boolean = True                        'View SOC or kWH (default SOC)
     Dim bolError As Boolean = False                         'Error message visible or not visible
-    Dim intEfficiencyHistory(6) As Integer                  'Efficiency history array
+    Dim floBattPowerHistory(3) As Double                    'Batt Pow history array
+    Dim floBattPowerRecent(BATT_POWER_COUNT_MAX - 1) As Double                   'Batt Pow currently (last few mins)
+    Dim battPowerRecentCount As Integer = 0                 'Cycles through the PowerRecent array
     Dim intCurrentEfficiency As Integer = 50                'Current efficiency
     Dim floBattPower As Double                              'Battery Power
     Dim floArrayPower As Double                             'Array Power
@@ -90,7 +132,7 @@
         'Declarations
 
         'Sets the COM port settings - GPS
-        serGPS.PortName = "COM12"
+        serGPS.PortName = "COM5"
         serGPS.BaudRate = "4800"
 
         'Sets the COM port settings - Body Controller
@@ -140,28 +182,28 @@
         camRearLocation.X = 150
         camRearLocation.Y = 177
         camRear.Location = camRearLocation
-
+        '
         'Sets the size
         camRearSize.Height = 420
         camRearSize.Width = 500
         camRear.Size = camRearSize
 
-
     End Sub
 
-    'FUNCTION: InitEfficiencyHistory ()
+    'FUNCTION: InitPowerHistory ()
     'INPUTS: NONE
     'OUTPUTS: NONE
     'PURPOSE: Initializes the efficiency history
 
-    Private Sub InitEfficiencyHistory()
+    Private Sub InitPowerHistory()
         'Adds blanks into the efficiency history array
-        intEfficiencyHistory(0) = 120
-        intEfficiencyHistory(1) = 60
-        intEfficiencyHistory(2) = 20
-        intEfficiencyHistory(3) = 40
-        intEfficiencyHistory(4) = 10
-        intEfficiencyHistory(5) = 70
+        'we should probably init the 5 min timer here
+
+        floBattPowerHistory(0) = 2
+        floBattPowerHistory(1) = 3
+        floBattPowerHistory(2) = 4
+        floBattPowerHistory(3) = 5
+
 
 
     End Sub
@@ -187,216 +229,264 @@
             lblSOC1.Text = "kWH:"
         End If
     End Sub
+    'FUNCTION: ToggleOdometer ()
+    'INPUTS: NONE
+    'OUTPUTS: NONE
+    'PURPOSE: Switches between showing odometer and no odometer
+    Private Sub ToggleOdometer()
+
+        'toggles between an odometer and it saying "review camera system"
+        If lblOdometer.Tag = "" Then
+            'goes to odometer state
+            lblOdometer.Tag = "on"
+
+            'makes the odometer visible
+            lblBorder2.Text = "Miles Traveled: "
+            lblOdometer.Visible = True
+        Else
+            'goes to normal state
+            lblOdometer.Tag = ""
+
+            'hides odometer
+            lblOdometer.Visible = False
+            lblBorder2.Text = "REARVIEW CAMERA SYSTEM"
+        End If
+    End Sub
 
     'FUNCTION: RefreshHistory()
     'INPUTS: NONE
     'OUTPUTS: NONE
     'PURPOSE: Refreshes the history of energy efficiency
-    Private Sub RefreshHistory()
+
+    Private Sub tmrHistory_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tmrHist.Tick
         'Constants
-        Const MAX_SIZE As Integer = 93
+        Const MAX_HEIGHT As Integer = 93
         Const MAX_LOCATION As Integer = 42
-        Const MAX_VALUE = 99
+        Const MAX_VALUE As Integer = 5
 
         'Declarations
+        Dim battPowerAverage As Integer = 0
         Dim EffRed As Color
-        Dim EffYellow As Color
-        Dim EffGreen As Color
+        Dim WattYellow As Color
+        Dim WattGreen As Color
         Dim sizTemp As Size
         Dim ptTemp As Point
 
+
         'Sets the values to the colors involved
-        EffRed = Color.FromArgb(CType(255, Byte), CType(51, Byte), CType(0, Byte))
-        EffYellow = Color.FromArgb(CType(255, Byte), CType(204, Byte), CType(102, Byte))
-        EffGreen = Color.FromArgb(CType(153, Byte), CType(102, Byte), CType(255, Byte))
+        WattRed = Color.FromArgb(CType(255, Byte), CType(51, Byte), CType(0, Byte))
+        WattYellow = Color.FromArgb(CType(255, Byte), CType(204, Byte), CType(102, Byte))
+        WattGreen = Color.FromArgb(CType(153, Byte), CType(102, Byte), CType(255, Byte))
 
         'Sets the bars' width
-        sizTemp.Width = 47
+        sizTemp.Width = 40
 
         'Checks for upper saturation
-        For intIndex = 0 To 5
-            If intEfficiencyHistory(intIndex) > 99 Then
-                intEfficiencyHistory(intIndex) = 99
-            End If
+        'For intIndex = 0 To 5
+        'If floBattPowerHistory(intIndex) > MAX_VALUE Then
+        'floBattPowerHistory(intIndex) = MAX_VALUE
+        'End If
+        'Next
+
+        'Updates the history bars by moving them all over by 1
+        For intIndex = 3 To 1
+            floBattPowerHistory(intIndex) = floBattPowerHistory(intIndex - 1)
         Next
 
+        'begins totaling each interval of the battery's output
+        For intIndex = 0 To BATT_POWER_COUNT_MAX - 1
+            battPowerAverage = battPowerAverage + floBattPowerRecent(intIndex)
+        Next
 
-        'Changes size of each of the history bars
-        sizTemp.Height = CInt((intEfficiencyHistory(0) / MAX_VALUE) * MAX_SIZE)
+        'calcs the average of the rightmost bar
+        battPowerAverage = battPowerAverage / BATT_POWER_COUNT_MAX
+
+        'updates newest bar
+        floBattPowerHistory(0) = battPowerAverage
+
+
+        'ensures the bar cant go above MAX_HEIGHT pixels
+        If floBattPowerHistory(0) <= MAX_VALUE And floBattPowerHistory(0) >= -MAX_VALUE Then
+            'otherwise makes the bars their percentage
+            sizTemp.Height = CInt((floBattPowerHistory(0) / MAX_VALUE) * MAX_HEIGHT)
+            If sizTemp.Height < 0 Then
+                sizTemp.Height = sizTemp.Height * -1
+            End If
+        Else
+            sizTemp.Height = MAX_HEIGHT
+        End If
         lblHist1.Size = sizTemp
 
-        sizTemp.Height = CInt((intEfficiencyHistory(1) / MAX_VALUE) * MAX_SIZE)
+
+
+        'and me
+        If floBattPowerHistory(1) <= 5 And floBattPowerHistory(1) >= -5 Then
+            sizTemp.Height = CInt((floBattPowerHistory(1) / MAX_VALUE) * MAX_HEIGHT)
+            If sizTemp.Height < 0 Then
+                sizTemp.Height = sizTemp.Height * -1
+            End If
+        Else
+            sizTemp.Height = MAX_HEIGHT
+        End If
         lblHist2.Size = sizTemp
 
-        sizTemp.Height = CInt((intEfficiencyHistory(2) / MAX_VALUE) * MAX_SIZE)
+        'n me
+        If floBattPowerHistory(2) <= 5 And floBattPowerHistory(2) >= -5 Then
+            sizTemp.Height = CInt((floBattPowerHistory(2) / MAX_VALUE) * MAX_HEIGHT)
+            If sizTemp.Height < 0 Then
+                sizTemp.Height = sizTemp.Height * -1
+            End If
+        Else
+            sizTemp.Height = MAX_HEIGHT
+        End If
         lblHist3.Size = sizTemp
 
-        sizTemp.Height = CInt((intEfficiencyHistory(3) / MAX_VALUE) * MAX_SIZE)
+        'm
+        If floBattPowerHistory(3) <= 5 And floBattPowerHistory(3) >= -5 Then
+            sizTemp.Height = CInt((floBattPowerHistory(3) / MAX_VALUE) * MAX_HEIGHT)
+            If sizTemp.Height < 0 Then
+                sizTemp.Height = sizTemp.Height * -1
+            End If
+        Else
+            sizTemp.Height = MAX_HEIGHT
+        End If
         lblHist4.Size = sizTemp
 
-        sizTemp.Height = CInt((intEfficiencyHistory(4) / MAX_VALUE) * MAX_SIZE)
-        lblHist5.Size = sizTemp
 
-        sizTemp.Height = CInt((intEfficiencyHistory(5) / MAX_VALUE) * MAX_SIZE)
-        lblHist6.Size = sizTemp
+
+
 
         'Changes the locations of each of the history bars to match
         ptTemp.X = lblHist1.Location.X
-        ptTemp.Y = MAX_LOCATION + (MAX_SIZE - lblHist1.Size.Height)
+        ptTemp.Y = MAX_LOCATION + (MAX_HEIGHT - lblHist1.Size.Height)
         lblHist1.Location = ptTemp
 
         ptTemp.X = lblHist2.Location.X
-        ptTemp.Y = MAX_LOCATION + (MAX_SIZE - lblHist2.Size.Height)
+        ptTemp.Y = MAX_LOCATION + (MAX_HEIGHT - lblHist2.Size.Height)
         lblHist2.Location = ptTemp
 
         ptTemp.X = lblHist3.Location.X
-        ptTemp.Y = MAX_LOCATION + (MAX_SIZE - lblHist3.Size.Height)
+        ptTemp.Y = MAX_LOCATION + (MAX_HEIGHT - lblHist3.Size.Height)
         lblHist3.Location = ptTemp
 
         ptTemp.X = lblHist4.Location.X
-        ptTemp.Y = MAX_LOCATION + (MAX_SIZE - lblHist4.Size.Height)
+        ptTemp.Y = MAX_LOCATION + (MAX_HEIGHT - lblHist4.Size.Height)
         lblHist4.Location = ptTemp
 
-        ptTemp.X = lblHist5.Location.X
-        ptTemp.Y = MAX_LOCATION + (MAX_SIZE - lblHist5.Size.Height)
-        lblHist5.Location = ptTemp
 
-        ptTemp.X = lblHist6.Location.X
-        ptTemp.Y = MAX_LOCATION + (MAX_SIZE - lblHist6.Size.Height)
-        lblHist6.Location = ptTemp
 
         'Relabels the history bars
-        If intEfficiencyHistory(0) < 25 Then
+        If floBattPowerHistory(0) < MAX_VALUE * 0.1 Then
             'Removes label
             lblHist1.Text = ""
         Else
             'Labels history
-            lblHist1.Text = intEfficiencyHistory(0)
+            lblHist1.Text = floBattPowerHistory(0)
         End If
 
-        If intEfficiencyHistory(1) < 25 Then
+        If floBattPowerHistory(1) < MAX_VALUE * 0.1 Then
             'Removes label
             lblHist2.Text = ""
         Else
             'Labels history
-            lblHist2.Text = intEfficiencyHistory(1)
+            lblHist2.Text = floBattPowerHistory(1)
         End If
 
-        If intEfficiencyHistory(2) < 25 Then
+        If floBattPowerHistory(2) < MAX_VALUE * 0.1 Then
             'Removes label
             lblHist3.Text = ""
         Else
             'Labels history
-            lblHist3.Text = intEfficiencyHistory(2)
+            lblHist3.Text = floBattPowerHistory(2)
         End If
 
-        If intEfficiencyHistory(3) < 25 Then
+        If floBattPowerHistory(3) < MAX_VALUE * 0.1 Then
             'Removes label
             lblHist4.Text = ""
         Else
             'Labels history
-            lblHist4.Text = intEfficiencyHistory(3)
+            lblHist4.Text = floBattPowerHistory(3)
         End If
 
-        If intEfficiencyHistory(4) < 25 Then
-            'Removes label
-            lblHist5.Text = ""
-        Else
-            'Labels history
-            lblHist5.Text = intEfficiencyHistory(4)
-        End If
 
-        If intEfficiencyHistory(5) < 25 Then
-            'Removes label
-            lblHist6.Text = ""
-        Else
-            'Labels history
-            lblHist6.Text = intEfficiencyHistory(5)
-        End If
-
-        'Changes the color of the labels
-        If intEfficiencyHistory(0) < EFF_RED Then
+        'Changes the color of the labels has to be negative since its usually discharging
+        'make this work for all columns, not just the first one
+        If floBattPowerHistory(0) <= WATT_RED * MAX_HEIGHT Then
             'Red
-            lblHist1.BackColor = EffRed
-        ElseIf intEfficiencyHistory(0) > EFF_RED And intEfficiencyHistory(0) < EFF_YELLOW Then
+            lblHist1.BackColor = WattRed
+        ElseIf floBattPowerHistory(0) > WATT_RED * MAX_HEIGHT And floBattPowerHistory(0) <= WATT_YELLOW * MAX_HEIGHT Then
             'Red
-            lblHist1.BackColor = EffYellow
+            lblHist1.BackColor = WattYellow
         Else
             'Green (blue actually)
-            lblHist1.BackColor = EffGreen
+            lblHist1.BackColor = WattGreen
         End If
 
-        If intEfficiencyHistory(1) < EFF_RED Then
+
+        'Changes the color of the labels has to be negative since its usually discharging
+        'make this work for all columns, not just the first one
+        If floBattPowerHistory(1) <= WATT_RED * MAX_HEIGHT Then
             'Red
-            lblHist2.BackColor = EffRed
-        ElseIf intEfficiencyHistory(1) > EFF_RED And intEfficiencyHistory(1) < EFF_YELLOW Then
+            lblHist2.BackColor = WattRed
+        ElseIf floBattPowerHistory(1) > WATT_RED * MAX_HEIGHT And floBattPowerHistory(1) <= WATT_YELLOW * MAX_HEIGHT Then
             'Red
-            lblHist2.BackColor = EffYellow
+            lblHist2.BackColor = WattYellow
         Else
             'Green (blue actually)
-            lblHist2.BackColor = EffGreen
+            lblHist2.BackColor = WattGreen
         End If
 
-        If intEfficiencyHistory(2) < EFF_RED Then
+
+
+        'Changes the color of the labels has to be negative since its usually discharging
+        'make this work for all columns, not just the first one
+        If floBattPowerHistory(2) <= WATT_RED * MAX_HEIGHT Then
             'Red
-            lblHist3.BackColor = EffRed
-        ElseIf intEfficiencyHistory(2) > EFF_RED And intEfficiencyHistory(2) < EFF_YELLOW Then
+            lblHist3.BackColor = WattRed
+        ElseIf floBattPowerHistory(2) > WATT_RED * MAX_HEIGHT And floBattPowerHistory(2) <= WATT_YELLOW * MAX_HEIGHT Then
             'Red
-            lblHist3.BackColor = EffYellow
+            lblHist3.BackColor = WattYellow
         Else
             'Green (blue actually)
-            lblHist3.BackColor = EffGreen
+            lblHist3.BackColor = WattGreen
         End If
 
-        If intEfficiencyHistory(3) < EFF_RED Then
+
+
+        'Changes the color of the labels has to be negative since its usually discharging
+        'make this work for all columns, not just the first one
+        If floBattPowerHistory(3) <= WATT_RED * MAX_HEIGHT Then
             'Red
-            lblHist4.BackColor = EffRed
-        ElseIf intEfficiencyHistory(3) > EFF_RED And intEfficiencyHistory(3) < EFF_YELLOW Then
+            lblHist4.BackColor = WattRed
+        ElseIf floBattPowerHistory(3) > WATT_RED * MAX_HEIGHT And floBattPowerHistory(3) <= WATT_YELLOW * MAX_HEIGHT Then
             'Red
-            lblHist4.BackColor = EffYellow
+            lblHist4.BackColor = WattYellow
         Else
             'Green (blue actually)
-            lblHist4.BackColor = EffGreen
+            lblHist4.BackColor = WattGreen
         End If
 
-        If intEfficiencyHistory(4) < EFF_RED Then
-            'Red
-            lblHist5.BackColor = EffRed
-        ElseIf intEfficiencyHistory(4) > EFF_RED And intEfficiencyHistory(4) < EFF_YELLOW Then
-            'Red
-            lblHist5.BackColor = EffYellow
-        Else
-            'Green (blue actually)
-            lblHist5.BackColor = EffGreen
-        End If
 
-        If intEfficiencyHistory(5) < EFF_RED Then
-            'Red
-            lblHist6.BackColor = EffRed
-        ElseIf intEfficiencyHistory(5) > EFF_RED And intEfficiencyHistory(5) < EFF_YELLOW Then
-            'Red
-            lblHist6.BackColor = EffYellow
-        Else
-            'Green (blue actually)
-            lblHist6.BackColor = EffGreen
-        End If
+
 
     End Sub
     'FUNCTION: RefreshEfficiency()
     'INPUTS: NONE
     'OUTPUTS: NONE
     'PURPOSE: Refreshes the energy efficiency
+
+    'i dont think we need this
     Private Sub RefreshEfficiency()
         'Declarations
         Dim ptSize As Size
         Const BAR_MAX As Integer = 121
-        Dim EffRed As Color
-        Dim EffYellow As Color
-        Dim EffGreen As Color
+        Dim WattRed As Color
+        'Dim WattYellow As Color
+        Dim WattGreen As Color
 
         'Sets the values to the colors involved
-        EffRed = Color.FromArgb(CType(255, Byte), CType(51, Byte), CType(0, Byte))
-        EffYellow = Color.FromArgb(CType(255, Byte), CType(204, Byte), CType(102, Byte))
+        WattRed = Color.FromArgb(CType(255, Byte), CType(51, Byte), CType(0, Byte))
+        'WattYellow = Color.FromArgb(CType(255, Byte), CType(204, Byte), CType(102, Byte))
         EffGreen = Color.FromArgb(CType(153, Byte), CType(102, Byte), CType(255, Byte))
 
 
@@ -410,7 +500,7 @@
 
 
         'Initializes the efficiency history
-        Call InitEfficiencyHistory()
+        Call InitPowerHistory()
 
         'Initializes the COM ports
         Call OpenCOMPorts()
@@ -426,7 +516,7 @@
 
 
         'Fills the table adapter
-        Me.SolarCarTableAdapter.Fill(Me.PhoenixDataSetMain.SolarCar)
+        'Me.SolarCarTableAdapter.Fill(Me.PhoenixDataSetMain.SolarCar)
     End Sub
 
     Private Sub lblSOC1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles lblSOC1.Click
@@ -445,15 +535,13 @@
         My.Computer.Audio.Play(My.Application.Info.DirectoryPath & "\Panel.wav")
     End Sub
 
-    Private Sub lblHist1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles lblHist1.Click
-        RefreshHistory()
-        RefreshEfficiency()
-    End Sub
 
     Private Sub tmrMain_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tmrMain.Tick
         'Main Timer
 
         'Declarations
+        Dim distTraveled As Double
+        Dim battPower As Double
         Dim PwrRed As Color
         Dim PwrYellow As Color
         Dim PwrGreen As Color
@@ -485,7 +573,20 @@
 
 
             'Updates the battery power
-            lblBattPower2.Text = Math.Round(PhoenixBCM.PackCurrent * PhoenixBCM.PackVoltage / 1000, 3).ToString
+            battPower = Math.Round(PhoenixBCM.PackCurrent * PhoenixBCM.PackVoltage / 1000, 3)
+            lblBattPower2.Text = battPower.ToString
+            'inputs the batt power for history histogram
+            floBattPowerRecent(battPowerRecentCount) = battPower
+
+            'cycles around the array from above (should be okay if there is some overlap I do believe
+            If battPowerRecentCount < (BATT_POWER_COUNT_MAX - 1) Then
+                battPowerRecentCount = battPowerRecentCount + 1
+            Else
+                battPowerRecentCount = 0
+            End If
+
+
+
             If Math.Round(PhoenixBCM.PackCurrent * PhoenixBCM.PackVoltage / 1000, 3) > -0.02 Then
                 lblBattPower.BackColor = PwrGreen
                 lblBattPower2.BackColor = PwrGreen
@@ -495,14 +596,28 @@
 
             End If
 
-            'Store Values into SQL database
-            SolarCarTableAdapter.Insert(Now.Ticks, Now.ToString, PhoenixGPS.Latitude, PhoenixGPS.Longitude, PhoenixGPS.Altitude, PhoenixGPS.Velocity, Math.Round(PhoenixBCM.StateOfCharge, 1), Math.Round(PhoenixBCM.PackVoltage, 1).ToString, Math.Round(PhoenixBCM.PackCurrent, 2).ToString, Math.Round(floArrayPower / PhoenixBCM.PackVoltage, 4).ToString, Math.Round(PhoenixBCM.LVBatteryVoltage, 1).ToString)
 
+
+            'calculates distance traveled in the last second in feet (i hope)
+            distTraveled = Convert.ToDecimal(PhoenixGPS.Velocity) * 3600 / 5280
+
+            'checks if the car is actually driving
+
+
+            '''''gets the old odometer value from the database so we can increase it by the latest value
+
+
+            'Store Values into SQL database
+            'SolarCarTableAdapter.Insert(Now.Ticks, Now.ToString, PhoenixGPS.Latitude, PhoenixGPS.Longitude, PhoenixGPS.Altitude, PhoenixGPS.Velocity, Math.Round(PhoenixBCM.StateOfCharge, 1), Math.Round(PhoenixBCM.PackVoltage, 1).ToString, Math.Round(PhoenixBCM.PackCurrent, 2).ToString, Math.Round(floArrayPower / PhoenixBCM.PackVoltage, 4).ToString, Math.Round(PhoenixBCM.LVBatteryVoltage, 1).ToString)
+
+            'if the odometer is on, update it
+            If lblOdometer.Tag = "on" Then
+                'lblOdometer.Text = 
+            End If
 
             'Updates array power
             floArrayPower = Split(BodyControllerOutput(2), "=")(1).Substring(0, 4)
             floArrayPower = Math.Round((floArrayPower * 6.1028 + floArrayOffset) * PhoenixBCM.PackVoltage)
-            lblMPPTPower2.Text = floArrayPower.ToString + "W"
 
         Catch ex As Exception
         End Try
@@ -519,7 +634,7 @@
     End Sub
 
 
-    Private Sub lblLeftBlinker_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles lblLeftBlinker.Click
+    Private Sub lblLeftBlinker_Click(sender As Object, e As System.EventArgs) Handles lblLeftBlinker.Click
         'Declarations
         Dim colBlinkerDefault = Color.FromArgb(CType(204, Byte), CType(102, Byte), CType(102, Byte))
 
@@ -554,7 +669,7 @@
     End Sub
 
 
-    Private Sub tmrLeftBlinker_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tmrLeftBlinker.Tick
+    Private Sub tmrLeftBlinker_Tick(sender As System.Object, e As System.EventArgs) Handles tmrLeftBlinker.Tick
         'Declarations
         Dim colBlinkerDefault As Color
         Dim colFlash As Color
@@ -594,7 +709,7 @@
 
     End Sub
 
-    Private Sub lblRightBlinker_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles lblRightBlinker.Click
+    Private Sub lblRightBlinker_Click(sender As System.Object, e As System.EventArgs) Handles lblRightBlinker.Click
         'Declarations
         Dim colBlinkerDefault = Color.FromArgb(CType(204, Byte), CType(102, Byte), CType(102, Byte))
 
@@ -629,7 +744,7 @@
         End If
     End Sub
 
-    Private Sub tmrRightBlinker_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tmrRightBlinker.Tick
+    Private Sub tmrRightBlinker_Tick(sender As System.Object, e As System.EventArgs) Handles tmrRightBlinker.Tick
         'Declarations
         Dim colBlinkerDefault As Color
         Dim colFlash As Color
@@ -671,7 +786,7 @@
     End Sub
 
 
-    Private Sub serMain_DataReceived(ByVal sender As Object, ByVal e As System.IO.Ports.SerialDataReceivedEventArgs) Handles serBodyController.DataReceived
+    Private Sub serMain_DataReceived(sender As Object, e As System.IO.Ports.SerialDataReceivedEventArgs) Handles serBodyController.DataReceived
         'Reads the current line from the serial port
         BodyControllerOutput = Split(serBodyController.ReadLine, ",")
 
@@ -684,7 +799,7 @@
     End Sub
 
 
-    Private Sub serGPS_DataReceived(ByVal sender As Object, ByVal e As System.IO.Ports.SerialDataReceivedEventArgs) Handles serGPS.DataReceived
+    Private Sub serGPS_DataReceived(sender As Object, e As System.IO.Ports.SerialDataReceivedEventArgs) Handles serGPS.DataReceived
         'Declarations
         Dim GPSArray As Array
         Dim VelocityRound As Integer
@@ -769,7 +884,7 @@
 
 
 
-    Private Sub lblhorn_click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles lblHorn.MouseDown
+    Private Sub lblhorn_click(sender As System.Object, e As System.EventArgs) Handles lblHorn.MouseDown
         'Declarations
         Dim colDefault As Color = Color.Plum
         Dim colHold As Color = Color.MediumVioletRed
@@ -794,7 +909,7 @@
 
     End Sub
 
-    Private Sub lblhorn_unclick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles lblHorn.MouseUp
+    Private Sub lblhorn_unclick(sender As System.Object, e As System.EventArgs) Handles lblHorn.MouseUp
         'Declarations
         Dim colDefault As Color = Color.Plum
         Dim colHold As Color = Color.MediumVioletRed
@@ -811,7 +926,7 @@
 
     End Sub
 
-    Private Sub tmrHorn_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tmrHorn.Tick
+    Private Sub tmrHorn_Tick(sender As System.Object, e As System.EventArgs) Handles tmrHorn.Tick
         'Sends a pulse COMand for the horn(output 1) for 5 tenths of a second
         serBodyController.WriteLine("$p,5,15")
 
@@ -825,7 +940,7 @@
     End Sub
 
 
-    Public Sub DecodeBCM(ByVal strCANMessage As String)
+    Public Sub DecodeBCM(strCANMessage As String)
         'Declaration
         Dim strID As String = ""
         Dim strLength As String = ""
@@ -1143,7 +1258,7 @@
 
 
 
-    Public Function BinaryToDecimal(ByVal Binary As String) As Long
+    Public Function BinaryToDecimal(Binary As String) As Long
         Dim n As Long
         Dim s As Integer
 
@@ -1156,7 +1271,7 @@
     End Function
 
 
-    Private Sub serBCM_DataReceived(ByVal sender As Object, ByVal e As System.IO.Ports.SerialDataReceivedEventArgs) Handles serBCM.DataReceived
+    Private Sub serBCM_DataReceived(sender As Object, e As System.IO.Ports.SerialDataReceivedEventArgs) Handles serBCM.DataReceived
         'Declarations
         Dim strBCM As String = ""
         Dim arrBCM As Array
@@ -1198,6 +1313,9 @@
         'Enables main timer
         tmrMain.Enabled = True
 
+        'Enables the histogram timer
+        tmrHist.Enabled = True
+
         'Enables the array contactor
         tmrEnableArray.Enabled = True
 
@@ -1227,7 +1345,7 @@
         End If
     End Sub
 
-    Private Sub lblHazard_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles lblHazard.Click
+    Private Sub lblHazard_Click(sender As System.Object, e As System.EventArgs) Handles lblHazard.Click
         'Declarations
         Dim colHazardDefault = Color.FromArgb(CType(255, Byte), CType(51, Byte), CType(0, Byte))
         Dim colBlinkerDefault = Color.FromArgb(CType(204, Byte), CType(102, Byte), CType(102, Byte))
@@ -1265,7 +1383,7 @@
         End If
     End Sub
 
-    Private Sub tmrHazard_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tmrHazard.Tick
+    Private Sub tmrHazard_Tick(sender As System.Object, e As System.EventArgs) Handles tmrHazard.Tick
         'Declarations
         Dim colHazardDefault = Color.FromArgb(CType(255, Byte), CType(51, Byte), CType(0, Byte))
         Dim colFlash = Color.FromArgb(CType(255, Byte), CType(255, Byte), CType(255, Byte))
@@ -1299,7 +1417,7 @@
         End If
     End Sub
 
-    Private Sub lblLight_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles lblLight.Click
+    Private Sub lblLight_Click(sender As System.Object, e As System.EventArgs) Handles lblLight.Click
         'Declarations
         Dim colLightDefault = Color.FromArgb(CType(255, Byte), CType(255, Byte), CType(193, Byte))
 
@@ -1338,6 +1456,58 @@
         'Changes the headlight color
         lblLight.BackColor = colLightEnabled
 
+    End Sub
+
+    Private Sub lblMusic_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles lblMusic.Click
+        Dim colMusicDefault = Color.FromArgb(CType(255, Byte), CType(255, Byte), CType(193, Byte))
+        Dim colMusicEnabled = Color.FromArgb(CType(245, Byte), CType(173, Byte), CType(0, Byte))
+        Try
+            If lblMusic.Tag = "on" Then
+                lblMusic.BackColor = colMusicDefault
+                My.Computer.Audio.Stop()
+                lblMusic.Tag = ""
+                Exit Sub
+            End If
+            If PhoenixGPS.Velocity <= 5 And lblMusic.Tag = "" Then
+                ' If Math.Round((Convert.ToDecimal(GPSArray(7)) * 1.15077945)).ToInt Then 'Convert into MPH
+                '
+
+                'Plays music
+                'My.Computer.Audio.Play("C:\Users\solar\Desktop\gangnam.wav")
+                'sets the  color if it's playing
+                lblMusic.BackColor = colMusicEnabled
+                lblMusic.Tag = "on"
+            End If
+            '
+        Catch ex As Exception
+
+        End Try
+
+    End Sub
+
+    Private Sub tmrMusic_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tmrMusic.Tick
+        'Declarations
+
+
+        'Changes the headlight color
+        lblMusic.BackColor = colMusicEnabled
+        My.Computer.Audio.Stop()
+
+
+    End Sub
+
+    Private Sub lblBorder2_Click(sender As System.Object, e As System.EventArgs) Handles lblBorder2.Click
+        Call ToggleOdometer()
+
+        'Plays the panel tone
+        My.Computer.Audio.Play(My.Application.Info.DirectoryPath & "\Panel.wav")
+    End Sub
+
+    Private Sub lblOdometer_Click(sender As System.Object, e As System.EventArgs) Handles lblOdometer.Click
+        Call ToggleOdometer()
+
+        'Plays the panel tone
+        My.Computer.Audio.Play(My.Application.Info.DirectoryPath & "\Panel.wav")
     End Sub
 
 End Class

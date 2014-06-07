@@ -37,8 +37,6 @@ Partial Class frmMain
         Me.lblHist2 = New System.Windows.Forms.Label()
         Me.lblHist3 = New System.Windows.Forms.Label()
         Me.lblHist4 = New System.Windows.Forms.Label()
-        Me.lblHist5 = New System.Windows.Forms.Label()
-        Me.lblHist6 = New System.Windows.Forms.Label()
         Me.tmrMain = New System.Windows.Forms.Timer(Me.components)
         Me.lblBattPower2 = New System.Windows.Forms.Label()
         Me.lblBattPower = New System.Windows.Forms.Label()
@@ -54,9 +52,6 @@ Partial Class frmMain
         Me.tmrBCMQuery = New System.Windows.Forms.Timer(Me.components)
         Me.tmrInit = New System.Windows.Forms.Timer(Me.components)
         Me.tmrEnableArray = New System.Windows.Forms.Timer(Me.components)
-        Me.srcMain = New System.Windows.Forms.BindingSource(Me.components)
-        Me.PhoenixDataSetMain = New Phoenix.PhoenixDataSetMain()
-        Me.SolarCarTableAdapter = New Phoenix.PhoenixDataSetMainTableAdapters.SolarCarTableAdapter()
         Me.lblHazard = New System.Windows.Forms.Label()
         Me.lblLight = New System.Windows.Forms.Label()
         Me.lblMusic = New System.Windows.Forms.Label()
@@ -64,6 +59,16 @@ Partial Class frmMain
         Me.tmrHeadLight = New System.Windows.Forms.Timer(Me.components)
         Me.lblEfficiency = New System.Windows.Forms.Label()
         Me.lblBorder3 = New System.Windows.Forms.Label()
+        Me.tmrMusic = New System.Windows.Forms.Timer(Me.components)
+        Me.lblOdometer = New System.Windows.Forms.Label()
+        Me.tmrHist = New System.Windows.Forms.Timer(Me.components)
+        Me.lblTimeToEmpty1 = New System.Windows.Forms.Label()
+        Me.lblTimeToEmpty2 = New System.Windows.Forms.Label()
+        Me.serMC = New System.IO.Ports.SerialPort(Me.components)
+        Me.tmrMCQuery = New System.Windows.Forms.Timer(Me.components)
+        Me.srcMain = New System.Windows.Forms.BindingSource(Me.components)
+        Me.PhoenixDataSetMain = New Phoenix.PhoenixDataSetMain()
+        Me.SolarCarTableAdapter = New Phoenix.PhoenixDataSetMainTableAdapters.SolarCarTableAdapter()
         CType(Me.picLeftBorder, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.srcMain, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PhoenixDataSetMain, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -72,12 +77,12 @@ Partial Class frmMain
         'lblSpeed
         '
         Me.lblSpeed.AutoSize = True
-        Me.lblSpeed.Font = New System.Drawing.Font("Helvetica LT UltraCompressed", 80.0!)
+        Me.lblSpeed.Font = New System.Drawing.Font("Microsoft Sans Serif", 80.0!)
         Me.lblSpeed.ForeColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(153, Byte), Integer), CType(CType(0, Byte), Integer))
         Me.lblSpeed.Location = New System.Drawing.Point(134, 34)
         Me.lblSpeed.Margin = New System.Windows.Forms.Padding(0)
         Me.lblSpeed.Name = "lblSpeed"
-        Me.lblSpeed.Size = New System.Drawing.Size(125, 126)
+        Me.lblSpeed.Size = New System.Drawing.Size(170, 120)
         Me.lblSpeed.TabIndex = 1
         Me.lblSpeed.Text = "55"
         Me.lblSpeed.TextAlign = System.Drawing.ContentAlignment.TopCenter
@@ -93,7 +98,7 @@ Partial Class frmMain
         'lblExit
         '
         Me.lblExit.BackColor = System.Drawing.Color.FromArgb(CType(CType(204, Byte), Integer), CType(CType(153, Byte), Integer), CType(CType(204, Byte), Integer))
-        Me.lblExit.Font = New System.Drawing.Font("Helvetica LT UltraCompressed", 18.0!)
+        Me.lblExit.Font = New System.Drawing.Font("Microsoft Sans Serif", 18.0!)
         Me.lblExit.Location = New System.Drawing.Point(611, 2)
         Me.lblExit.Name = "lblExit"
         Me.lblExit.Size = New System.Drawing.Size(187, 30)
@@ -103,7 +108,7 @@ Partial Class frmMain
         '
         'lblTime
         '
-        Me.lblTime.Font = New System.Drawing.Font("Helvetica LT UltraCompressed", 20.0!)
+        Me.lblTime.Font = New System.Drawing.Font("Microsoft Sans Serif", 20.0!)
         Me.lblTime.ForeColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(153, Byte), Integer), CType(CType(0, Byte), Integer))
         Me.lblTime.Location = New System.Drawing.Point(514, 2)
         Me.lblTime.Margin = New System.Windows.Forms.Padding(0)
@@ -116,13 +121,13 @@ Partial Class frmMain
         'lblBorder2
         '
         Me.lblBorder2.BackColor = System.Drawing.Color.FromArgb(CType(CType(204, Byte), Integer), CType(CType(153, Byte), Integer), CType(CType(204, Byte), Integer))
-        Me.lblBorder2.Font = New System.Drawing.Font("Helvetica LT UltraCompressed", 22.0!)
+        Me.lblBorder2.Font = New System.Drawing.Font("Microsoft Sans Serif", 22.0!)
         Me.lblBorder2.ForeColor = System.Drawing.Color.Black
         Me.lblBorder2.Location = New System.Drawing.Point(148, 142)
         Me.lblBorder2.Name = "lblBorder2"
         Me.lblBorder2.Size = New System.Drawing.Size(505, 30)
         Me.lblBorder2.TabIndex = 2
-        Me.lblBorder2.Text = "REARVIEW CAMERA SYSTEM"
+        Me.lblBorder2.Text = "REARVIEW CAMERA SYSTEM                  ODOMETER:"
         '
         'picLeftBorder
         '
@@ -138,7 +143,7 @@ Partial Class frmMain
         'lblSOC1
         '
         Me.lblSOC1.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(193, Byte), Integer))
-        Me.lblSOC1.Font = New System.Drawing.Font("Helvetica LT UltraCompressed", 35.0!)
+        Me.lblSOC1.Font = New System.Drawing.Font("Microsoft Sans Serif", 35.0!)
         Me.lblSOC1.Location = New System.Drawing.Point(3, 182)
         Me.lblSOC1.Name = "lblSOC1"
         Me.lblSOC1.Size = New System.Drawing.Size(129, 117)
@@ -148,7 +153,7 @@ Partial Class frmMain
         'lblSOC2
         '
         Me.lblSOC2.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(193, Byte), Integer))
-        Me.lblSOC2.Font = New System.Drawing.Font("Helvetica LT UltraCompressed", 48.0!)
+        Me.lblSOC2.Font = New System.Drawing.Font("Microsoft Sans Serif", 48.0!)
         Me.lblSOC2.Location = New System.Drawing.Point(3, 229)
         Me.lblSOC2.Name = "lblSOC2"
         Me.lblSOC2.Size = New System.Drawing.Size(129, 71)
@@ -159,7 +164,7 @@ Partial Class frmMain
         'lblLeftBlinker
         '
         Me.lblLeftBlinker.BackColor = System.Drawing.Color.FromArgb(CType(CType(204, Byte), Integer), CType(CType(102, Byte), Integer), CType(CType(102, Byte), Integer))
-        Me.lblLeftBlinker.Font = New System.Drawing.Font("Helvetica LT UltraCompressed", 35.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblLeftBlinker.Font = New System.Drawing.Font("Microsoft Sans Serif", 35.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblLeftBlinker.Location = New System.Drawing.Point(3, 56)
         Me.lblLeftBlinker.Name = "lblLeftBlinker"
         Me.lblLeftBlinker.Size = New System.Drawing.Size(129, 117)
@@ -169,7 +174,7 @@ Partial Class frmMain
         'lblRightBlinker
         '
         Me.lblRightBlinker.BackColor = System.Drawing.Color.FromArgb(CType(CType(204, Byte), Integer), CType(CType(102, Byte), Integer), CType(CType(102, Byte), Integer))
-        Me.lblRightBlinker.Font = New System.Drawing.Font("Helvetica LT UltraCompressed", 35.0!)
+        Me.lblRightBlinker.Font = New System.Drawing.Font("Microsoft Sans Serif", 35.0!)
         Me.lblRightBlinker.Location = New System.Drawing.Point(669, 56)
         Me.lblRightBlinker.Name = "lblRightBlinker"
         Me.lblRightBlinker.Size = New System.Drawing.Size(129, 117)
@@ -179,68 +184,46 @@ Partial Class frmMain
         'lblHist1
         '
         Me.lblHist1.BackColor = System.Drawing.Color.FromArgb(CType(CType(153, Byte), Integer), CType(CType(102, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.lblHist1.Font = New System.Drawing.Font("Helvetica LT UltraCompressed", 22.0!, System.Drawing.FontStyle.Bold)
+        Me.lblHist1.Font = New System.Drawing.Font("Microsoft Sans Serif", 22.0!, System.Drawing.FontStyle.Bold)
         Me.lblHist1.ForeColor = System.Drawing.Color.Black
-        Me.lblHist1.Location = New System.Drawing.Point(576, 46)
+        Me.lblHist1.Location = New System.Drawing.Point(435, 43)
         Me.lblHist1.Name = "lblHist1"
-        Me.lblHist1.Size = New System.Drawing.Size(50, 91)
+        Me.lblHist1.Size = New System.Drawing.Size(45, 91)
         Me.lblHist1.TabIndex = 12
-        Me.lblHist1.Text = "75"
+        Me.lblHist1.Text = "5"
         '
         'lblHist2
         '
         Me.lblHist2.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(204, Byte), Integer), CType(CType(102, Byte), Integer))
-        Me.lblHist2.Font = New System.Drawing.Font("Helvetica LT UltraCompressed", 22.0!, System.Drawing.FontStyle.Bold)
+        Me.lblHist2.Font = New System.Drawing.Font("Microsoft Sans Serif", 22.0!, System.Drawing.FontStyle.Bold)
         Me.lblHist2.ForeColor = System.Drawing.Color.Black
-        Me.lblHist2.Location = New System.Drawing.Point(520, 68)
+        Me.lblHist2.Location = New System.Drawing.Point(385, 68)
         Me.lblHist2.Name = "lblHist2"
-        Me.lblHist2.Size = New System.Drawing.Size(50, 66)
+        Me.lblHist2.Size = New System.Drawing.Size(45, 66)
         Me.lblHist2.TabIndex = 13
-        Me.lblHist2.Text = "50"
+        Me.lblHist2.Text = "3.5"
         '
         'lblHist3
         '
         Me.lblHist3.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(51, Byte), Integer), CType(CType(0, Byte), Integer))
-        Me.lblHist3.Font = New System.Drawing.Font("Helvetica LT UltraCompressed", 22.0!, System.Drawing.FontStyle.Bold)
+        Me.lblHist3.Font = New System.Drawing.Font("Microsoft Sans Serif", 22.0!, System.Drawing.FontStyle.Bold)
         Me.lblHist3.ForeColor = System.Drawing.Color.Black
-        Me.lblHist3.Location = New System.Drawing.Point(464, 101)
+        Me.lblHist3.Location = New System.Drawing.Point(335, 101)
         Me.lblHist3.Name = "lblHist3"
-        Me.lblHist3.Size = New System.Drawing.Size(50, 33)
+        Me.lblHist3.Size = New System.Drawing.Size(45, 33)
         Me.lblHist3.TabIndex = 14
-        Me.lblHist3.Text = "25"
+        Me.lblHist3.Text = "1.7"
         '
         'lblHist4
         '
         Me.lblHist4.BackColor = System.Drawing.Color.FromArgb(CType(CType(153, Byte), Integer), CType(CType(102, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.lblHist4.Font = New System.Drawing.Font("Helvetica LT UltraCompressed", 22.0!, System.Drawing.FontStyle.Bold)
+        Me.lblHist4.Font = New System.Drawing.Font("Microsoft Sans Serif", 22.0!, System.Drawing.FontStyle.Bold)
         Me.lblHist4.ForeColor = System.Drawing.Color.Black
-        Me.lblHist4.Location = New System.Drawing.Point(408, 56)
+        Me.lblHist4.Location = New System.Drawing.Point(285, 56)
         Me.lblHist4.Name = "lblHist4"
-        Me.lblHist4.Size = New System.Drawing.Size(50, 78)
+        Me.lblHist4.Size = New System.Drawing.Size(45, 78)
         Me.lblHist4.TabIndex = 15
-        Me.lblHist4.Text = "69"
-        '
-        'lblHist5
-        '
-        Me.lblHist5.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(204, Byte), Integer), CType(CType(102, Byte), Integer))
-        Me.lblHist5.Font = New System.Drawing.Font("Helvetica LT UltraCompressed", 22.0!, System.Drawing.FontStyle.Bold)
-        Me.lblHist5.ForeColor = System.Drawing.Color.Black
-        Me.lblHist5.Location = New System.Drawing.Point(352, 78)
-        Me.lblHist5.Name = "lblHist5"
-        Me.lblHist5.Size = New System.Drawing.Size(50, 56)
-        Me.lblHist5.TabIndex = 16
-        Me.lblHist5.Text = "42"
-        '
-        'lblHist6
-        '
-        Me.lblHist6.BackColor = System.Drawing.Color.FromArgb(CType(CType(153, Byte), Integer), CType(CType(102, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.lblHist6.Font = New System.Drawing.Font("Helvetica LT UltraCompressed", 22.0!, System.Drawing.FontStyle.Bold)
-        Me.lblHist6.ForeColor = System.Drawing.Color.Black
-        Me.lblHist6.Location = New System.Drawing.Point(296, 68)
-        Me.lblHist6.Name = "lblHist6"
-        Me.lblHist6.Size = New System.Drawing.Size(50, 66)
-        Me.lblHist6.TabIndex = 17
-        Me.lblHist6.Text = "56"
+        Me.lblHist4.Text = "4"
         '
         'tmrMain
         '
@@ -249,7 +232,7 @@ Partial Class frmMain
         'lblBattPower2
         '
         Me.lblBattPower2.BackColor = System.Drawing.Color.FromArgb(CType(CType(32, Byte), Integer), CType(CType(98, Byte), Integer), CType(CType(238, Byte), Integer))
-        Me.lblBattPower2.Font = New System.Drawing.Font("Helvetica LT UltraCompressed", 40.0!)
+        Me.lblBattPower2.Font = New System.Drawing.Font("Microsoft Sans Serif", 40.0!)
         Me.lblBattPower2.ForeColor = System.Drawing.Color.White
         Me.lblBattPower2.Location = New System.Drawing.Point(670, 229)
         Me.lblBattPower2.Name = "lblBattPower2"
@@ -261,7 +244,7 @@ Partial Class frmMain
         'lblBattPower
         '
         Me.lblBattPower.BackColor = System.Drawing.Color.FromArgb(CType(CType(32, Byte), Integer), CType(CType(98, Byte), Integer), CType(CType(238, Byte), Integer))
-        Me.lblBattPower.Font = New System.Drawing.Font("Helvetica LT UltraCompressed", 32.0!)
+        Me.lblBattPower.Font = New System.Drawing.Font("Microsoft Sans Serif", 32.0!)
         Me.lblBattPower.ForeColor = System.Drawing.Color.White
         Me.lblBattPower.Location = New System.Drawing.Point(670, 182)
         Me.lblBattPower.Name = "lblBattPower"
@@ -272,7 +255,7 @@ Partial Class frmMain
         'lblMPPTPower2
         '
         Me.lblMPPTPower2.BackColor = System.Drawing.Color.FromArgb(CType(CType(153, Byte), Integer), CType(CType(102, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.lblMPPTPower2.Font = New System.Drawing.Font("Helvetica LT UltraCompressed", 40.0!)
+        Me.lblMPPTPower2.Font = New System.Drawing.Font("Microsoft Sans Serif", 40.0!)
         Me.lblMPPTPower2.ForeColor = System.Drawing.Color.White
         Me.lblMPPTPower2.Location = New System.Drawing.Point(2, 357)
         Me.lblMPPTPower2.Name = "lblMPPTPower2"
@@ -284,7 +267,7 @@ Partial Class frmMain
         'lblMPPTPower
         '
         Me.lblMPPTPower.BackColor = System.Drawing.Color.FromArgb(CType(CType(153, Byte), Integer), CType(CType(102, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.lblMPPTPower.Font = New System.Drawing.Font("Helvetica LT UltraCompressed", 32.0!)
+        Me.lblMPPTPower.Font = New System.Drawing.Font("Microsoft Sans Serif", 32.0!)
         Me.lblMPPTPower.ForeColor = System.Drawing.Color.White
         Me.lblMPPTPower.Location = New System.Drawing.Point(2, 310)
         Me.lblMPPTPower.Name = "lblMPPTPower"
@@ -312,7 +295,7 @@ Partial Class frmMain
         'lblHorn
         '
         Me.lblHorn.BackColor = System.Drawing.Color.Plum
-        Me.lblHorn.Font = New System.Drawing.Font("Helvetica LT UltraCompressed", 50.0!)
+        Me.lblHorn.Font = New System.Drawing.Font("Microsoft Sans Serif", 50.0!)
         Me.lblHorn.Location = New System.Drawing.Point(669, 483)
         Me.lblHorn.Name = "lblHorn"
         Me.lblHorn.Size = New System.Drawing.Size(129, 117)
@@ -323,7 +306,6 @@ Partial Class frmMain
         'tmrHorn
         '
         Me.tmrHorn.Interval = 50
-        Me.tmrHorn.Tag = "0"
         '
         'serBCM
         '
@@ -342,24 +324,10 @@ Partial Class frmMain
         '
         Me.tmrEnableArray.Interval = 1000
         '
-        'srcMain
-        '
-        Me.srcMain.DataSource = Me.PhoenixDataSetMain
-        Me.srcMain.Position = 0
-        '
-        'PhoenixDataSetMain
-        '
-        Me.PhoenixDataSetMain.DataSetName = "PhoenixDataSetMain"
-        Me.PhoenixDataSetMain.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema
-        '
-        'SolarCarTableAdapter
-        '
-        Me.SolarCarTableAdapter.ClearBeforeFill = True
-        '
         'lblHazard
         '
         Me.lblHazard.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(51, Byte), Integer), CType(CType(0, Byte), Integer))
-        Me.lblHazard.Font = New System.Drawing.Font("Helvetica LT UltraCompressed", 36.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblHazard.Font = New System.Drawing.Font("Microsoft Sans Serif", 36.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblHazard.Location = New System.Drawing.Point(2, 525)
         Me.lblHazard.Name = "lblHazard"
         Me.lblHazard.Size = New System.Drawing.Size(129, 75)
@@ -370,7 +338,7 @@ Partial Class frmMain
         'lblLight
         '
         Me.lblLight.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(193, Byte), Integer))
-        Me.lblLight.Font = New System.Drawing.Font("Helvetica LT UltraCompressed", 36.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblLight.Font = New System.Drawing.Font("Microsoft Sans Serif", 36.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblLight.Location = New System.Drawing.Point(3, 438)
         Me.lblLight.Name = "lblLight"
         Me.lblLight.Size = New System.Drawing.Size(129, 75)
@@ -381,7 +349,7 @@ Partial Class frmMain
         'lblMusic
         '
         Me.lblMusic.BackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(193, Byte), Integer))
-        Me.lblMusic.Font = New System.Drawing.Font("Helvetica LT UltraCompressed", 24.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblMusic.Font = New System.Drawing.Font("Microsoft Sans Serif", 24.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblMusic.Location = New System.Drawing.Point(670, 438)
         Me.lblMusic.Name = "lblMusic"
         Me.lblMusic.Size = New System.Drawing.Size(129, 38)
@@ -400,7 +368,7 @@ Partial Class frmMain
         'lblEfficiency
         '
         Me.lblEfficiency.BackColor = System.Drawing.Color.FromArgb(CType(CType(51, Byte), Integer), CType(CType(102, Byte), Integer), CType(CType(204, Byte), Integer))
-        Me.lblEfficiency.Font = New System.Drawing.Font("Helvetica LT UltraCompressed", 48.0!, System.Drawing.FontStyle.Bold)
+        Me.lblEfficiency.Font = New System.Drawing.Font("Microsoft Sans Serif", 48.0!, System.Drawing.FontStyle.Bold)
         Me.lblEfficiency.Location = New System.Drawing.Point(669, 354)
         Me.lblEfficiency.Name = "lblEfficiency"
         Me.lblEfficiency.Size = New System.Drawing.Size(129, 71)
@@ -411,18 +379,87 @@ Partial Class frmMain
         'lblBorder3
         '
         Me.lblBorder3.BackColor = System.Drawing.Color.FromArgb(CType(CType(51, Byte), Integer), CType(CType(102, Byte), Integer), CType(CType(204, Byte), Integer))
-        Me.lblBorder3.Font = New System.Drawing.Font("Helvetica LT UltraCompressed", 35.0!)
+        Me.lblBorder3.Font = New System.Drawing.Font("Microsoft Sans Serif", 35.0!)
         Me.lblBorder3.Location = New System.Drawing.Point(669, 307)
         Me.lblBorder3.Name = "lblBorder3"
         Me.lblBorder3.Size = New System.Drawing.Size(129, 117)
         Me.lblBorder3.TabIndex = 10
         Me.lblBorder3.Text = "MI/kWH"
         '
+        'tmrMusic
+        '
+        Me.tmrMusic.Interval = 250000
+        '
+        'lblOdometer
+        '
+        Me.lblOdometer.BackColor = System.Drawing.Color.FromArgb(CType(CType(204, Byte), Integer), CType(CType(153, Byte), Integer), CType(CType(204, Byte), Integer))
+        Me.lblOdometer.Font = New System.Drawing.Font("Microsoft Sans Serif", 22.0!)
+        Me.lblOdometer.ForeColor = System.Drawing.Color.Black
+        Me.lblOdometer.Location = New System.Drawing.Point(535, 142)
+        Me.lblOdometer.Name = "lblOdometer"
+        Me.lblOdometer.Size = New System.Drawing.Size(118, 30)
+        Me.lblOdometer.TabIndex = 30
+        Me.lblOdometer.Text = "0"
+        '
+        'tmrHist
+        '
+        Me.tmrHist.Interval = 300000
+        '
+        'lblTimeToEmpty1
+        '
+        Me.lblTimeToEmpty1.BackColor = System.Drawing.Color.FromArgb(CType(CType(51, Byte), Integer), CType(CType(102, Byte), Integer), CType(CType(204, Byte), Integer))
+        Me.lblTimeToEmpty1.Font = New System.Drawing.Font("Microsoft Sans Serif", 22.0!, System.Drawing.FontStyle.Bold)
+        Me.lblTimeToEmpty1.ForeColor = System.Drawing.Color.Black
+        Me.lblTimeToEmpty1.Location = New System.Drawing.Point(485, 43)
+        Me.lblTimeToEmpty1.Name = "lblTimeToEmpty1"
+        Me.lblTimeToEmpty1.Size = New System.Drawing.Size(168, 91)
+        Me.lblTimeToEmpty1.TabIndex = 31
+        Me.lblTimeToEmpty1.Tag = "5"
+        Me.lblTimeToEmpty1.Text = "ETC(5minIntrvl):"
+        Me.lblTimeToEmpty1.TextAlign = System.Drawing.ContentAlignment.TopCenter
+        '
+        'lblTimeToEmpty2
+        '
+        Me.lblTimeToEmpty2.BackColor = System.Drawing.Color.FromArgb(CType(CType(51, Byte), Integer), CType(CType(102, Byte), Integer), CType(CType(204, Byte), Integer))
+        Me.lblTimeToEmpty2.Font = New System.Drawing.Font("Microsoft Sans Serif", 22.0!, System.Drawing.FontStyle.Bold)
+        Me.lblTimeToEmpty2.ForeColor = System.Drawing.Color.Black
+        Me.lblTimeToEmpty2.Location = New System.Drawing.Point(485, 90)
+        Me.lblTimeToEmpty2.Name = "lblTimeToEmpty2"
+        Me.lblTimeToEmpty2.Size = New System.Drawing.Size(168, 44)
+        Me.lblTimeToEmpty2.TabIndex = 32
+        Me.lblTimeToEmpty2.Text = "00:00:00"
+        Me.lblTimeToEmpty2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'serMC
+        '
+        Me.serMC.BaudRate = 19200
+        '
+        'tmrMCQuery
+        '
+        Me.tmrMCQuery.Interval = 1000
+        '
+        'srcMain
+        '
+        Me.srcMain.DataSource = Me.PhoenixDataSetMain
+        Me.srcMain.Position = 0
+        '
+        'PhoenixDataSetMain
+        '
+        Me.PhoenixDataSetMain.DataSetName = "PhoenixDataSetMain"
+        Me.PhoenixDataSetMain.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema
+        '
+        'SolarCarTableAdapter
+        '
+        Me.SolarCarTableAdapter.ClearBeforeFill = True
+        '
         'frmMain
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
         Me.BackColor = System.Drawing.Color.Black
         Me.ClientSize = New System.Drawing.Size(800, 600)
+        Me.Controls.Add(Me.lblTimeToEmpty2)
+        Me.Controls.Add(Me.lblTimeToEmpty1)
+        Me.Controls.Add(Me.lblOdometer)
         Me.Controls.Add(Me.lblMusic)
         Me.Controls.Add(Me.lblLight)
         Me.Controls.Add(Me.lblHazard)
@@ -431,8 +468,6 @@ Partial Class frmMain
         Me.Controls.Add(Me.lblMPPTPower)
         Me.Controls.Add(Me.lblBattPower2)
         Me.Controls.Add(Me.lblBattPower)
-        Me.Controls.Add(Me.lblHist6)
-        Me.Controls.Add(Me.lblHist5)
         Me.Controls.Add(Me.lblHist4)
         Me.Controls.Add(Me.lblHist3)
         Me.Controls.Add(Me.lblHist2)
@@ -474,8 +509,6 @@ Partial Class frmMain
     Friend WithEvents lblHist2 As System.Windows.Forms.Label
     Friend WithEvents lblHist3 As System.Windows.Forms.Label
     Friend WithEvents lblHist4 As System.Windows.Forms.Label
-    Friend WithEvents lblHist5 As System.Windows.Forms.Label
-    Friend WithEvents lblHist6 As System.Windows.Forms.Label
     Friend WithEvents tmrMain As System.Windows.Forms.Timer
     Friend WithEvents lblBattPower2 As System.Windows.Forms.Label
     Friend WithEvents lblBattPower As System.Windows.Forms.Label
@@ -501,5 +534,12 @@ Partial Class frmMain
     Friend WithEvents tmrHeadLight As System.Windows.Forms.Timer
     Friend WithEvents lblEfficiency As System.Windows.Forms.Label
     Friend WithEvents lblBorder3 As System.Windows.Forms.Label
+    Friend WithEvents tmrMusic As System.Windows.Forms.Timer
+    Friend WithEvents lblOdometer As System.Windows.Forms.Label
+    Friend WithEvents tmrHist As System.Windows.Forms.Timer
+    Friend WithEvents lblTimeToEmpty1 As System.Windows.Forms.Label
+    Friend WithEvents lblTimeToEmpty2 As System.Windows.Forms.Label
+    Friend WithEvents serMC As System.IO.Ports.SerialPort
+    Friend WithEvents tmrMCQuery As System.Windows.Forms.Timer
 
 End Class
