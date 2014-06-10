@@ -4,7 +4,7 @@
     Const WATT_YELLOW As Double = -0.25
     Const BATT_POWER_COUNT_MAX As Integer = 300             'the number of seconds between each histogram bar update
     'Const PWR_MAX = 7500
-
+    Const DIR_INFO As String = "C:\Users\osusvt\Documents\GitHub\Phoenix-VB\Phoenix"
     'edits:
 
     '4/27
@@ -132,20 +132,20 @@
         'Declarations
 
         'Sets the COM port settings - GPS
-        serGPS.PortName = "COM5"
-        serGPS.BaudRate = "4800"
+        'serGPS.PortName = "COM4"
+        'serGPS.BaudRate = "4800"
 
         'Sets the COM port settings - Body Controller
-        serBodyController.PortName = "COM7"
+        serBodyController.PortName = "COM5"
         serBodyController.BaudRate = "9600"
 
         'SEts the COM port settings - BCM
-        serBCM.PortName = "COM4"
+        serBCM.PortName = "COM6"
         serBCM.BaudRate = "57600"
 
         'Opens the serial port
         serBCM.Open()
-        serGPS.Open()
+        'serGPS.Open()
         serBodyController.Open()
 
 
@@ -516,7 +516,7 @@
 
 
         'Fills the table adapter
-        'Me.SolarCarTableAdapter.Fill(Me.PhoenixDataSetMain.SolarCar)
+        Me.SolarCarTableAdapter.Fill(Me.PhoenixDataSetMain.SolarCar)
     End Sub
 
     Private Sub lblSOC1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles lblSOC1.Click
@@ -524,7 +524,7 @@
         Call ToggleSOC()
 
         'Plays the panel tone
-        My.Computer.Audio.Play(My.Application.Info.DirectoryPath & "\Panel.wav")
+        My.Computer.Audio.Play(DIR_INFO & "\Panel.wav")
     End Sub
 
     Private Sub lblSOC2_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles lblSOC2.Click
@@ -532,7 +532,7 @@
         Call ToggleSOC()
 
         'Plays the panel tone
-        My.Computer.Audio.Play(My.Application.Info.DirectoryPath & "\Panel.wav")
+        My.Computer.Audio.Play(DIR_INFO & "\Panel.wav")
     End Sub
 
 
@@ -608,7 +608,7 @@
 
 
             'Store Values into SQL database
-            'SolarCarTableAdapter.Insert(Now.Ticks, Now.ToString, PhoenixGPS.Latitude, PhoenixGPS.Longitude, PhoenixGPS.Altitude, PhoenixGPS.Velocity, Math.Round(PhoenixBCM.StateOfCharge, 1), Math.Round(PhoenixBCM.PackVoltage, 1).ToString, Math.Round(PhoenixBCM.PackCurrent, 2).ToString, Math.Round(floArrayPower / PhoenixBCM.PackVoltage, 4).ToString, Math.Round(PhoenixBCM.LVBatteryVoltage, 1).ToString)
+            SolarCarTableAdapter.Insert(Now.Ticks, Now.ToString, PhoenixGPS.Latitude, PhoenixGPS.Longitude, PhoenixGPS.Altitude, PhoenixGPS.Velocity, Math.Round(PhoenixBCM.StateOfCharge, 1), Math.Round(PhoenixBCM.PackVoltage, 1).ToString, Math.Round(PhoenixBCM.PackCurrent, 2).ToString, Math.Round(floArrayPower / PhoenixBCM.PackVoltage, 4).ToString, Math.Round(PhoenixBCM.LVBatteryVoltage, 1).ToString)
 
             'if the odometer is on, update it
             If lblOdometer.Tag = "on" Then
@@ -644,7 +644,7 @@
         End If
 
         'Plays the panel tone
-        My.Computer.Audio.Play(My.Application.Info.DirectoryPath & "\Panel.wav")
+        My.Computer.Audio.Play(DIR_INFO & "\Panel.wav")
 
         'Disables the right blinker
         If tmrRightBlinker.Enabled = True Then
@@ -687,7 +687,7 @@
 
 
             'Plays music tone
-            My.Computer.Audio.Play(My.Application.Info.DirectoryPath & "\Turn.wav")
+            My.Computer.Audio.Play(DIR_INFO & "\Turn.wav")
 
             'Sets the timer tag so that we go half time
             tmrLeftBlinker.Tag = "You're it!"
@@ -719,7 +719,7 @@
         End If
 
         'Plays the panel tone
-        My.Computer.Audio.Play(My.Application.Info.DirectoryPath & "\Panel.wav")
+        My.Computer.Audio.Play(DIR_INFO & "\Panel.wav")
 
 
         'Disables the left blinker
@@ -763,7 +763,7 @@
 
 
             'Plays music tone
-            My.Computer.Audio.Play(My.Application.Info.DirectoryPath & "\Turn.wav")
+            My.Computer.Audio.Play(DIR_INFO & "\Turn.wav")
 
             'Sets the timer tag so that we go half time
             tmrRightBlinker.Tag = "You're it!"
@@ -895,7 +895,7 @@
         End If
 
         'Plays the panel tone
-        My.Computer.Audio.Play(My.Application.Info.DirectoryPath & "\Panel.wav")
+        My.Computer.Audio.Play(DIR_INFO & "\Panel.wav")
 
         'Flashes the label
         If lblHorn.BackColor = colDefault Then
@@ -1308,7 +1308,7 @@
         Call InitCamera()
 
         'Plays the ready tone
-        My.Computer.Audio.Play(My.Application.Info.DirectoryPath & "\Ready.wav")
+        My.Computer.Audio.Play(DIR_INFO & "\Ready.wav")
 
         'Enables main timer
         tmrMain.Enabled = True
@@ -1351,7 +1351,7 @@
         Dim colBlinkerDefault = Color.FromArgb(CType(204, Byte), CType(102, Byte), CType(102, Byte))
 
         'Plays the panel sound
-        My.Computer.Audio.Play(My.Application.Info.DirectoryPath & "\Panel.wav")
+        My.Computer.Audio.Play(DIR_INFO & "\Panel.wav")
 
 
         'Opens the COM port if port is closed
@@ -1397,7 +1397,7 @@
             serBodyController.WriteLine("$b,8,2,10,2,7,2,9,2")
 
             'Plays music tone
-            My.Computer.Audio.Play(My.Application.Info.DirectoryPath & "\Red Alert.wav")
+            My.Computer.Audio.Play(DIR_INFO & "\Red Alert.wav")
 
             'Sets the timer tag so that we go half time
             tmrHazard.Tag = "You're it!"
@@ -1422,7 +1422,7 @@
         Dim colLightDefault = Color.FromArgb(CType(255, Byte), CType(255, Byte), CType(193, Byte))
 
         'Plays the panel sound
-        My.Computer.Audio.Play(My.Application.Info.DirectoryPath & "\Panel.wav")
+        My.Computer.Audio.Play(DIR_INFO & "\Panel.wav")
 
 
         'Opens the COM port if port is closed
@@ -1500,14 +1500,14 @@
         Call ToggleOdometer()
 
         'Plays the panel tone
-        My.Computer.Audio.Play(My.Application.Info.DirectoryPath & "\Panel.wav")
+        My.Computer.Audio.Play(DIR_INFO & "\Panel.wav")
     End Sub
 
     Private Sub lblOdometer_Click(sender As System.Object, e As System.EventArgs) Handles lblOdometer.Click
         Call ToggleOdometer()
 
         'Plays the panel tone
-        My.Computer.Audio.Play(My.Application.Info.DirectoryPath & "\Panel.wav")
+        My.Computer.Audio.Play(DIR_INFO & "\Panel.wav")
     End Sub
 
 End Class
