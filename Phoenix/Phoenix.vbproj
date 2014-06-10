@@ -126,18 +126,10 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="PhoenixDataSet.Designer.vb">
+    <Compile Include="solarcarDataSet.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>PhoenixDataSet.xsd</DependentUpon>
-    </Compile>
-    <Compile Include="PhoenixDataSetMain.Designer.vb">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PhoenixDataSetMain.xsd</DependentUpon>
-    </Compile>
-    <Compile Include="PhoenixDataSetMain.vb">
-      <DependentUpon>PhoenixDataSetMain.xsd</DependentUpon>
+      <DependentUpon>solarcarDataSet.xsd</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -163,27 +155,16 @@
       <CustomToolNamespace>My</CustomToolNamespace>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
-    <None Include="PhoenixDataSet.xsc">
-      <DependentUpon>PhoenixDataSet.xsd</DependentUpon>
+    <None Include="solarcarDataSet.xsc">
+      <DependentUpon>solarcarDataSet.xsd</DependentUpon>
     </None>
-    <None Include="PhoenixDataSet.xsd">
+    <None Include="solarcarDataSet.xsd">
       <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>PhoenixDataSet.Designer.vb</LastGenOutput>
+      <LastGenOutput>solarcarDataSet.Designer.vb</LastGenOutput>
       <SubType>Designer</SubType>
     </None>
-    <None Include="PhoenixDataSet.xss">
-      <DependentUpon>PhoenixDataSet.xsd</DependentUpon>
-    </None>
-    <None Include="PhoenixDataSetMain.xsc">
-      <DependentUpon>PhoenixDataSetMain.xsd</DependentUpon>
-    </None>
-    <None Include="PhoenixDataSetMain.xsd">
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>PhoenixDataSetMain.Designer.vb</LastGenOutput>
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="PhoenixDataSetMain.xss">
-      <DependentUpon>PhoenixDataSetMain.xsd</DependentUpon>
+    <None Include="solarcarDataSet.xss">
+      <DependentUpon>solarcarDataSet.xsd</DependentUpon>
     </None>
   </ItemGroup>
   <ItemGroup>

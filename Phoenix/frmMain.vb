@@ -516,7 +516,7 @@
 
 
         'Fills the table adapter
-        Me.SolarCarTableAdapter.Fill(Me.PhoenixDataSetMain.SolarCar)
+        Me.telemetryTableAdapter.Fill(Me.solarcarDataSet.telemetry)
     End Sub
 
     Private Sub lblSOC1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles lblSOC1.Click
@@ -608,7 +608,7 @@
 
 
             'Store Values into SQL database
-            SolarCarTableAdapter.Insert(Now.Ticks, Now.ToString, PhoenixGPS.Latitude, PhoenixGPS.Longitude, PhoenixGPS.Altitude, PhoenixGPS.Velocity, Math.Round(PhoenixBCM.StateOfCharge, 1), Math.Round(PhoenixBCM.PackVoltage, 1).ToString, Math.Round(PhoenixBCM.PackCurrent, 2).ToString, Math.Round(floArrayPower / PhoenixBCM.PackVoltage, 4).ToString, Math.Round(PhoenixBCM.LVBatteryVoltage, 1).ToString)
+            telemetryTableAdapter.Insert(Now.Ticks, Now.ToString, PhoenixGPS.Latitude, PhoenixGPS.Longitude, PhoenixGPS.Altitude, PhoenixGPS.Velocity, Math.Round(PhoenixBCM.StateOfCharge, 1), Math.Round(PhoenixBCM.PackVoltage, 1).ToString, Math.Round(PhoenixBCM.PackCurrent, 2).ToString, Math.Round(floArrayPower / PhoenixBCM.PackVoltage, 4).ToString, Math.Round(PhoenixBCM.LVBatteryVoltage, 1).ToString)
 
             'if the odometer is on, update it
             If lblOdometer.Tag = "on" Then

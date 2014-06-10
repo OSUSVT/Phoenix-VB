@@ -67,11 +67,11 @@ Partial Class frmMain
         Me.serMC = New System.IO.Ports.SerialPort(Me.components)
         Me.tmrMCQuery = New System.Windows.Forms.Timer(Me.components)
         Me.srcMain = New System.Windows.Forms.BindingSource(Me.components)
-        Me.PhoenixDataSetMain = New Phoenix.PhoenixDataSetMain()
-        Me.SolarCarTableAdapter = New Phoenix.PhoenixDataSetMainTableAdapters.SolarCarTableAdapter()
+        Me.solarcarDataSet = New Phoenix.solarcarDataSet()
+        Me.telemetryTableAdapter = New Phoenix.solarcarDataSetTableAdapters.telemetryTableAdapter()
         CType(Me.picLeftBorder, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.srcMain, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.PhoenixDataSetMain, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.solarcarDataSet, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'lblSpeed
@@ -440,17 +440,17 @@ Partial Class frmMain
         '
         'srcMain
         '
-        Me.srcMain.DataSource = Me.PhoenixDataSetMain
+        Me.srcMain.DataSource = Me.solarcarDataSet
         Me.srcMain.Position = 0
         '
-        'PhoenixDataSetMain
+        'solarcarDataSet
         '
-        Me.PhoenixDataSetMain.DataSetName = "PhoenixDataSetMain"
-        Me.PhoenixDataSetMain.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema
+        Me.solarcarDataSet.DataSetName = "solarcarDataSet"
+        Me.solarcarDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema
         '
         'SolarCarTableAdapter
         '
-        Me.SolarCarTableAdapter.ClearBeforeFill = True
+        Me.telemetryTableAdapter.ClearBeforeFill = True
         '
         'frmMain
         '
@@ -490,7 +490,7 @@ Partial Class frmMain
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         CType(Me.picLeftBorder, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.srcMain, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.PhoenixDataSetMain, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.solarcarDataSet, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -525,8 +525,8 @@ Partial Class frmMain
     Friend WithEvents tmrInit As System.Windows.Forms.Timer
     Friend WithEvents tmrEnableArray As System.Windows.Forms.Timer
     Friend WithEvents srcMain As System.Windows.Forms.BindingSource
-    Friend WithEvents PhoenixDataSetMain As Phoenix.PhoenixDataSetMain
-    Friend WithEvents SolarCarTableAdapter As Phoenix.PhoenixDataSetMainTableAdapters.SolarCarTableAdapter
+    Friend WithEvents solarcarDataSet As Phoenix.solarcarDataSet
+    Friend WithEvents telemetryTableAdapter As Phoenix.solarcarDataSetTableAdapters.telemetryTableAdapter
     Friend WithEvents lblHazard As System.Windows.Forms.Label
     Friend WithEvents lblLight As System.Windows.Forms.Label
     Friend WithEvents lblMusic As System.Windows.Forms.Label
